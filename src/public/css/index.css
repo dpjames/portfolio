@@ -97,6 +97,7 @@
 }
 @media only screen and (max-width: 1000px) {
    #nav {
+      z-index:1;
       padding:5px;
       position:absolute;
       top:80px;
