@@ -9,16 +9,21 @@
       <script src="js/index.js"></script>
       <div id="siteContainer">
          <div id="title">
+         <div id="hamburger" class="buttonStyles" onclick="toggleMobileNav()">
+            <div class="mobileNavButton"></div>
+            <div class="mobileNavButton"></div>
+            <div class="mobileNavButton"></div>
+         </div>
             <h1 id="titleLeft">David James</h1>
             <h2 id="titleRight"> Portfolio </h2>
          </div>
-         <div id="nav">
-            <div tplName="about" onclick="changePage(this.getAttribute('tplName'))" class="navItem">About</div>
-            <div tplName="projects" onclick="changePage(this.getAttribute('tplName'))" class="navItem">Projects</div>
-            <div tplName="adventures" onclick="changePage(this.getAttribute('tplName'))" class="navItem">Adventures</div>
+
+         <div id="nav" class="mediahide">
+            <div tplName="about" onclick="changePage(this.getAttribute('tplName'))" class="buttonStyles navItem">About</div>
+            <div tplName="projects" onclick="changePage(this.getAttribute('tplName'))" class="buttonStyles navItem">Projects</div>
+            <div tplName="adventures" onclick="changePage(this.getAttribute('tplName'))" class="buttonStyles navItem">Adventures</div>
          </div>
          <div id="main">
-            this will be the main content
          </div>
       </div>
    </body>

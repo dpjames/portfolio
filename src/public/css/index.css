@@ -2,6 +2,8 @@
    height:100%;
    padding-left:20px;
    padding-right:20px;
+   position:relative;
+   font-family: "SF Pro Display","SF Pro Icons","Helvetica Neue","Helvetica","Arial",sans-serif;
 }
 #title {
    background-color: rgba(0,100,200,.5); 
@@ -26,6 +28,17 @@
    flex-direction : row;
    justify-content : space-between;  
 }
+
+.mobileNavButton{
+   width: 35px;
+   height: 5px;
+   background-color: black;
+   margin: 6px 0;
+}
+#hamburger{
+   display:none;
+   padding-top:25px;
+}
 .navItem {
    display:flex;
    justify-content:center;
@@ -38,13 +51,47 @@
    cursor:pointer;
    font-size:25px;
 }
-.navItem:hover {
+.buttonStyles {
+
+}
+.buttonStyles:hover {
    box-shadow: 0 0 10px -1px rgba(0,0,0,0.5);
 }
-.navItem:active{
+.buttonStyles:active{
    color:rgba(0,0,0,1);
    box-shadow: 0 0 10px -1px rgba(0,0,0,1);
 }
 .hide {
-   display:none;
+   display:none !important;
+}
+
+@media only screen and (max-width: 1000px) {
+   #nav {
+      padding:5px;
+      position:absolute;
+      top:80px;
+      left:20px;
+      width:35%;
+      height:auto;
+      background-color:rgb(132, 177, 229);
+      flex-direction:column;
+      justify-content: flex-start;
+   }
+   .navItem {
+      width:98%;
+      padding-top:25px;
+      padding-bottom:25px;
+   }
+   .mobileNavButton{
+      display:block;
+   }
+   #hamburger{
+      display:block;
+      padding-left:20px;
+      padding-right:20px;
+   }
+   .mediahide {
+      display:none !important;
+   }
+   
 }
