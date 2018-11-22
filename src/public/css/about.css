@@ -1,4 +1,5 @@
 #circle{
+   margin:10px;
    width:650px;
    height:650px;
 }
@@ -37,18 +38,34 @@
 }
 .hoverHide:hover {
    background-color:white;
+   transition: background-color .25s linear;
 }
 .circleTextWrapper {
    position:relative;
    height:100%;
    width:100%;
-   font-size:0px;
 }
-.circleTextWrapper div h3 {
-   font-size:12px;
+.top {
+   bottom:0;
 }
-.circleTextWrapper:hover {
-   font-size:12px; 
+.right {
+   left:0;
+}
+.textLeft {
+   width:75%;
+   float:right;
+   padding:5px;
+}
+.textRight {
+   width:75%;
+   float:left;
+   padding:5px;
+}
+.bottom {
+   top:0;
+}
+.left {
+   right:0;
 }
 .circleText {
    position:absolute;
@@ -56,4 +73,18 @@
 #circleContainer {
    display:flex;
    justify-content:center;
+}
+.circleTitle {
+   position:absolute;
+   font-size:25px;
+}
+.circleTitlePosR {
+   top:50%;
+   right:50%;
+   
+}
+.circleTitlePosL {
+   top:50%;
+   left:50%;
+
 }
