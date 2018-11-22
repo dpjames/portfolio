@@ -18,3 +18,23 @@ function toggleMobileNav(){
 function hideMobileNav(){
    document.getElementById("nav").classList.add("mediahide");
 }
+function createListEntry(image){
+   items = []
+
+   var li = document.createElement("div");
+   li.classList.add("contentListItem");
+   if(image){
+      var image = document.createElement("div");
+      image.classList.add("contentListItemImage");
+      li.appendChild(image);
+   }
+   var title = document.createElement("div");
+   title.classList.add("contentListItemTitle");
+   li.appendChild(title);
+   var description = document.createElement("div");
+   description.classList.add("contentListItemDescription");
+   li.appendChild(description);
+
+
+   return li;
+}
