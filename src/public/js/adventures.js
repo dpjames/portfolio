@@ -27,11 +27,29 @@ function showAdventureForm(){
 function createNewAdventure(){
    var info = document.getElementById("newPostData").querySelectorAll("input");
    var keys = document.getElementById("newPostData").querySelectorAll("label");
-   var dataJson = {}
+   var data = {}
    for(var i = 0; i < info.length; i++){
-      dataJson[keys[i].innerHTML] = info[i].value;
+      data[keys[i].innerHTML] = info[i].value;
    }
-   console.log(JSON.stringify(dataJson));
+   var body = {
+      uname : data.uname,
+      pwd : data.pwd,
+      adventure : {
+         "tags" : data.tags,
+         "image" : data.image,
+         "description":data.description,
+         "title":data.title,
+      }
+   };
+   fetch("/adventure", {method:"POST",body:JSON.stringify(body)})
+      .then(resp => resp.status)
+      .then(stat => {
+         if(stat != 200){
+            alert(stat);
+         }
+      })
+      .catch(err => alert(err));
+   //console.log(JSON.stringify(body));
 }
 var count = 5;
 function newPostCount(){
