@@ -6,6 +6,7 @@ import (
    "log"
    "fmt"
    "io/ioutil"
+   "crypto/sha256"
 )
 
 const PORT string = ":80";
@@ -27,10 +28,21 @@ func sendError(code int, w http.ResponseWriter){
    fmt.Fprint(w, "I am sad to inform you something went wrong");
    return;
 }
+
+//I am aware this is not exactly secure.
+//the data here is not sensitive and I did not want to use external
+//libraries for this project
+//however, storing passwords in plain text is dumb so this adds some
+//level of (bad) security.
+//Also note there is only one user (me) and this endpoint is just to make
+//my life easier when adding data.
 func checkPwd(uname string, pwd string) bool{
-   fmt.Println(uname);
-   fmt.Println(pwd);
-   return true;
+   b, err := ioutil.ReadFile(uname)
+   if(err != nil){
+      return false;
+   }
+   thisHash := sha256.Sum256([]byte(pwd));
+   return (string(thisHash[:]) == string(b));
 }
 func check(e error, code int, w http.ResponseWriter){
    if(e != nil) {
@@ -48,6 +60,7 @@ func adventure(w http.ResponseWriter, r *http.Request){
          check(err, 500, w);
          if(!checkPwd(body.Uname, body.Pwd)){
             sendError(403, w);
+            return;
          }
          b, err := ioutil.ReadFile(ADVENTURE_FILE)
          check(err, 500, w);
