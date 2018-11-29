@@ -1,9 +1,17 @@
 function changePage(where){
    getPage(where).then(html => {
       document.getElementById("main").innerHTML = html;
-      var js = document.createElement("script");
+      //const head = document.getElementsByTagName("head")[0];
+      const head = document.getElementById("viewHead");
+      head.innerHTML = "";
+      const js = document.createElement("script");
+      const css = document.createElement("link");
       js.setAttribute("src", "/js/"+where+".js");
-      document.getElementsByTagName("head")[0].appendChild(js);
+      css.setAttribute("rel","stylesheet");
+      css.setAttribute("href","css/"+where+".css");
+      head.appendChild(js);
+      head.appendChild(css);
+      //<!--link rel="stylesheet" href="css/about.css"-->
       hideMobileNav();
    })
    .catch(error => alert(error));

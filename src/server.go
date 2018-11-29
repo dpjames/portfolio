@@ -17,6 +17,21 @@ type adventureJson struct {
    Description string `json:"description"`
    Image string `json:"image"`
    Tags string `json:"tags"`
+   Lon string `json:"lon"`
+   Lat string `json:"lat"`
+}
+type geometry struct {
+   Coordinates []float64 `json:"coordinates"`
+   Type string `json:"type"`
+}
+type feature struct {
+   Geometry geometry `json:"geometry"`
+   Properties adventureJson `json:"properties"`
+   Type string `json:"type"`
+}
+type adventureGeoJson struct {
+   Features []feature `json:"features"`
+   Type string `json:"type"`
 }
 type newAdventureRequest struct {
    Adv adventureJson `json:"adventure"`
@@ -52,7 +67,7 @@ func check(e error, code int, w http.ResponseWriter){
 }
 func adventure(w http.ResponseWriter, r *http.Request){
    switch r.Method {
-      case http.MethodPost:
+      case "POST":
          rawBody, err := ioutil.ReadAll(r.Body);
          check(err, 500, w);
          var body newAdventureRequest;
@@ -64,7 +79,7 @@ func adventure(w http.ResponseWriter, r *http.Request){
          }
          b, err := ioutil.ReadFile(ADVENTURE_FILE)
          check(err, 500, w);
-         var advlist []adventureJson;
+         var advGeoJson []adventureGeoJson;
          err = json.Unmarshal(b, &advlist);
          advlist = append(advlist, body.Adv);
          data, err := json.Marshal(advlist);

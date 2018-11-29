@@ -1,61 +1,59 @@
-function fillAdventureList(){
-   console.log("hello world");
-   var cont = document.getElementById("adventures");
-   getAdventureData()
-      .then( advs => {
-         advs.forEach(createAdventureEntry(cont));
-      }).catch( err => alert(err));
-}
+console.log("hello world");
 function getAdventureData(){
    return fetch("/data/adventures.json").then(resp => resp.json());
 }
-function createAdventureEntry(container){
-   return function(adv){
-      var title = adv.title;
-      var description = adv.description;
-      var image = adv.image;
-      var entry = createListEntry(true);
-      entry.children[0].innerHTML = image;
-      entry.children[1].innerHTML = title;
-      entry.children[2].innerHTML = description;
-      container.appendChild(entry);
-   };
+function changeMapControls(caller){
+   const whereTo = caller.getAttribute("data-page");
+   if(caller.classList.contains("active")){
+      return; 
+   } else {
+      document.querySelector(".active")
+              .classList.remove("active");
+      caller.classList.add("active");
+   }
+   const dest = document.getElementById("mapControlsContent"); 
+   dest.innerHTML = document.getElementById(whereTo).innerHTML;
 }
-function showAdventureForm(){
-   document.getElementById("newAdventureForm").classList.toggle("hide");
+function mapClick(evt){
+   let lonlat = ol.proj.toLonLat(evt.coordinate);
+   document.getElementById("latin").value = lonlat[1]; 
+   document.getElementById("lonin").value = lonlat[0]; 
+}
+function initMap(){
+   const layers = [
+      new ol.layer.Tile({source: new ol.source.OSM({crossOrigin : null})})
+   ];
+   const view = new ol.View({
+      center : ol.proj.fromLonLat([-122.44, 40.25]),
+      zoom: 5
+   });
+   let map = new ol.Map({
+      target:"map",
+      layers:layers,
+      view:view,
+   });
+   map.on("click", mapClick);
+   setTimeout(()=>map.updateSize(), 200);
 }
 function createNewAdventure(){
-   var info = document.getElementById("newPostData").querySelectorAll("input");
-   var keys = document.getElementById("newPostData").querySelectorAll("label");
-   var data = {}
-   for(var i = 0; i < info.length; i++){
-      data[keys[i].innerHTML] = info[i].value;
-   }
-   var body = {
-      uname : data.uname,
-      pwd : data.pwd,
-      adventure : {
-         "tags" : data.tags,
-         "image" : data.image,
-         "description":data.description,
-         "title":data.title,
+   const data = document.getElementById("newAdvTable").querySelectorAll("td input");
+   let body = {adventure :{}};
+   data.forEach((e) => {
+      const key = e.getAttribute("data-key")
+      if(key === "pwd" || key === "uname"){
+         body[key] = e.value;
+         return;
       }
-   };
-   fetch("/adventure", {method:"POST",body:JSON.stringify(body)})
-      .then(resp => resp.status)
-      .then(stat => {
-         if(stat != 200){
-            alert(stat);
-         }
-      })
-      .catch(err => alert(err));
-   //console.log(JSON.stringify(body));
+      body["adventure"][key] = e.value; 
+   });
+   fetch("/adventure", {method:"POST", body:JSON.stringify(body)})
+   .then(resp => resp.status == 200 ? Promise.resolve() : alert(resp.status))
+   .catch(err => alert(err));
 }
-var count = 5;
-function newPostCount(){
-   count--;
-   if(count < 0){
-      document.getElementById("newAdventureForm").classList.remove("hide");
-   }
+initMap();
+document.getElementById("titleLeft").onclick = function(){
+   document.querySelectorAll(".addAdventureGUI").forEach(function(e){
+      e.classList.toggle("hide");
+   });
 }
-fillAdventureList();
+changeMapControls(document.getElementById("defaultSubNav"));
