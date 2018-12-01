@@ -14,15 +14,50 @@ function changeMapControls(caller){
    const dest = document.getElementById("mapControlsContent"); 
    dest.innerHTML = document.getElementById(whereTo).innerHTML;
 }
+function populateCallout(feature, callout){
+   callout.element.innerHTML = 
+   `
+   <div class="popup">
+      <div class="title">${feature.get("title")}</div>
+      <div class="description">${feature.get("description")}</div>
+      <div class="tags">${feature.get("tags")}</div>
+   </div> 
+   `;
+}
 function mapClick(evt){
    let lonlat = ol.proj.toLonLat(evt.coordinate);
+   let showCallout = false
+   const mapel = document.getElementById("map");
    document.getElementById("latin").value = lonlat[1]; 
    document.getElementById("lonin").value = lonlat[0]; 
+   mapel.map.forEachFeatureAtPixel(evt.pixel, function(feature){
+      populateCallout(feature, mapel.callout);  
+      mapel.callout.setPosition(evt.coordinate);
+      showCallout = true;
+   });
+   if(!showCallout){
+      mapel.callout.setPosition(undefined);
+   }
+}
+function createAdvLayer(){
+   const src = new ol.source.Vector({
+      url:"./data/adventures.json",
+      format: new ol.format.GeoJSON()
+   });
+   //maybe cluster
+   return new ol.layer.Vector({
+      title:"adventures",
+      source:src
+   });
 }
 function initMap(){
    const layers = [
-      new ol.layer.Tile({source: new ol.source.OSM({crossOrigin : null})})
+      new ol.layer.Tile({source: new ol.source.OSM({crossOrigin : null})}),
+      createAdvLayer()
    ];
+   const callout = new ol.Overlay({
+      element: document.getElementById("popup")
+   });
    const view = new ol.View({
       center : ol.proj.fromLonLat([-122.44, 40.25]),
       zoom: 5
@@ -32,7 +67,11 @@ function initMap(){
       layers:layers,
       view:view,
    });
+   map.addOverlay(callout);
    map.on("click", mapClick);
+   var mapel = document.getElementById("map");
+   mapel.map = map;
+   mapel.callout = callout;
    setTimeout(()=>map.updateSize(), 200);
 }
 function createNewAdventure(){

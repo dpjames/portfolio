@@ -7,6 +7,7 @@ import (
    "fmt"
    "io/ioutil"
    "crypto/sha256"
+   "strconv"
 )
 
 const PORT string = ":80";
@@ -21,7 +22,7 @@ type adventureJson struct {
    Lat string `json:"lat"`
 }
 type geometry struct {
-   Coordinates []float64 `json:"coordinates"`
+   Coordinates [2]float64 `json:"coordinates"`
    Type string `json:"type"`
 }
 type feature struct {
@@ -79,18 +80,34 @@ func adventure(w http.ResponseWriter, r *http.Request){
          }
          b, err := ioutil.ReadFile(ADVENTURE_FILE)
          check(err, 500, w);
-         var advGeoJson []adventureGeoJson;
-         err = json.Unmarshal(b, &advlist);
-         advlist = append(advlist, body.Adv);
-         data, err := json.Marshal(advlist);
+         var advGeoJson adventureGeoJson;
+         err = json.Unmarshal(b, &advGeoJson);
+         newFeature := featureFromAdvReq(body.Adv, w);
+         advGeoJson.Features = append(advGeoJson.Features, newFeature);
+         data, err := json.Marshal(advGeoJson);
          check(err, 500, w);
-         fmt.Println(string(data));
          err = ioutil.WriteFile(ADVENTURE_FILE, data, 0644);
          check(err, 500, w)
          break;
       default:
          sendError(404, w);
    }
+}
+func featureFromAdvReq(req adventureJson, w http.ResponseWriter) feature{
+   var geo  geometry;
+   geo.Type = "Point";
+   lon, err := strconv.ParseFloat(req.Lon,64);
+   check(err, 400, w);
+   lat, err := strconv.ParseFloat(req.Lat,64);
+   check(err, 400, w);
+   geo.Coordinates = [2]float64{lon, lat};
+   var prop adventureJson;
+   prop = req
+   var feat feature;
+   feat.Type = "Feature"
+   feat.Geometry = geo;
+   feat.Properties = prop;
+   return feat;
 }
 func main() {
    fs := http.FileServer(http.Dir("public"))
