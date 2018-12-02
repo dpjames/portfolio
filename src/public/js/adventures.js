@@ -21,7 +21,7 @@ function populateCallout(feature, callout){
       <div class="title">${feature.get("title")}</div>
       <div class="description">${feature.get("description")}</div>
       <div class="tags">${feature.get("tags")}</div>
-      <button class="editAdventureGUI" 
+      <button class="hide editAdventureGUI" 
               onclick="deleteAdventure(${feature.get("uid")})">delete
       </button>
    </div> 
