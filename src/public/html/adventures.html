@@ -1,26 +1,21 @@
-
-
-
 <div id="mapControls">
    <div class="subnav">
-      <div id="defaultSubNav" onclick="changeMapControls(this)" data-page="search" class="buttonStyles navItem">Search/Filter</div>
-      <div onclick="changeMapControls(this)" data-page="list" class="active buttonStyles navItem">List</div>
-      <div onclick="changeMapControls(this)" data-page="add" class="addAdventureGUI hide buttonStyles navItem">Add</div>
+      <div id="defaultSubNav" onclick="changeMapControls(this)" data-page=".advSearch" class="buttonStyles navItem">Search/Filter</div>
+      <div onclick="changeMapControls(this)" data-page=".advList" class="active buttonStyles navItem">List</div>
+      <div onclick="changeMapControls(this)" data-page=".advAdd" class="editAdventureGUI hide buttonStyles navItem">Add</div>
    </div>
    <div id="mapControlsContent">
-       
+ 
    </div>
 </div>
 
 
-<div id="map">
-   <div class="popup">
-      <div class="title"></div>
-      <div class="description"></div>
-      <div class="tags"></div>
-   </div>
-</div>
-<div class="hide" id="search">
+<div id="map"></div>
+<div class="hide advSearch">
+   <input class="advFilterSearch" type="text" value="Search here"></input>
+   <button onclick="searchFilter('adventures', '.advFilterSearch')">go!</button>
+   <button onclick="resetFilters('adventures')">reset</button>
+   <!--
    <label>Search</label>
    <input type="text"></input>
    </br>
@@ -31,44 +26,45 @@
    <label>activity</label>
    </br>
    <label>area?</label>
+   -->
+   <div class="advList">
+      js will build this list from the map features
+   </div>
 </div>
-<div class="hide" id="list">
-js will build this list from the map features
-</div>
-<div class="hide" id="add">
+<div class="hide advAdd">
    <div><strong>This is a personal tool for me to easily add items to the database</strong></div>
    <table id="newAdvTable">
       <tr>
          <td>title</td>
-         <td><input type="text" data-key="title"></input></td>
+         <td><input class="advInput" type="text" data-key="title"></input></td>
       </tr> 
       <tr>
          <td>description</td>
-         <td><input type="text" data-key="description"></input></td>
+         <td><textarea class="advInput" data-key="description"></textarea></td>
       </tr> 
       <tr>
          <td>image</td>
-         <td><input type="text" data-key="image"></input></td>
+         <td><input class="advInput" type="text" data-key="image"></input></td>
       </tr> 
       <tr>
          <td>tags</td>
-         <td><input type="text" data-key="tags"></input></td>
+         <td><input class="advInput" type="text" data-key="tags"></input></td>
       </tr> 
       <tr>
          <td>lat</td>
-         <td><input data-key="lat" id="latin"></input></td>
+         <td><input class="advInput" data-key="lat" id="latin"></input></td>
       </tr> 
       <tr>
          <td>lon</td>
-         <td><input data-key="lon" id="lonin"></input></td>
+         <td><input class="advInput" data-key="lon" id="lonin"></input></td>
       </tr> 
       <tr>
          <td>uname</td>
-         <td><input data-key="uname" type="username"></input></td>
+         <td><input id="uname" class="advInput" data-key="uname" type="username"></input></td>
       </tr> 
       <tr>
          <td>pwd</td>
-         <td><input data-key="pwd" type="password"></input></td>
+         <td><input id="pwd" class="advInput" data-key="pwd" type="password"></input></td>
       </tr> 
    </table>
    <button onclick="createNewAdventure()">post!</button>
