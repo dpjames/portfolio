@@ -42,14 +42,9 @@ type editAdventureRequest struct {
    Pwd string `json:"pwd"`
 }
 
-var hasWritten = false;
 func sendError(code int, w http.ResponseWriter){
-   if(!hasWritten){
-      w.WriteHeader(code);
-      fmt.Fprint(w, "I am sad to inform you something went wrong");
-      hasWritten = true;
-   }
-   return;
+   w.WriteHeader(code);
+   fmt.Fprint(w, "I am sad to inform you something went wrong");
 }
 
 //I am aware this is not exactly secure.
