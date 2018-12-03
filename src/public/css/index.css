@@ -78,6 +78,7 @@
    margin: 7px 0 7px 0;
    text-align:center;
    position:relative;
+   overflow:hidden;
 }
 .contentListItemTitle{
    font-size:22px;
