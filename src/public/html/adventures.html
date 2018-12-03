@@ -12,25 +12,15 @@
 
 <div id="map"></div>
 <div class="hide advSearch">
+   <label>filters</label>
    <input class="advFilterSearch" type="text" value="Search here"></input>
    <button onclick="searchFilter('adventures', '.advFilterSearch')">go!</button>
    <button onclick="resetFilters('adventures')">reset</button>
-   <!--
-   <label>Search</label>
-   <input type="text"></input>
-   </br>
-   <label>Filter by</label>
-   </br>
-   <label>time</label>
-   </br>
-   <label>activity</label>
-   </br>
-   <label>area?</label>
-   -->
-   <div class="advList">
-      js will build this list from the map features
-   </div>
+   <div id="filterList" class="filterList"></div>
 </div>
+<div class="hide advList">
+</div>
+
 <div class="hide advAdd">
    <div><strong>This is a personal tool for me to easily add items to the database</strong></div>
    <table id="newAdvTable">
@@ -68,4 +58,5 @@
       </tr> 
    </table>
    <button onclick="createNewAdventure()">post!</button>
+   <div id="edit" class="hide"></div>
 </div>

@@ -14,16 +14,15 @@ function changeMapControls(caller){
    dest.innerHTML = document.querySelector(whereTo).innerHTML;
 }
 function populateCallout(feature, callout){
-   const deleteButton = `<button>delete</button>`
+   const editOn = document.getElementById("edit").classList.contains("enabled");
+   const deleteButton = `<button onclick="deleteAdventure(${feature.get("uid")})">delete</button>`
    callout.element.innerHTML = 
    `
    <div class="popup">
       <div class="title">${feature.get("title")}</div>
       <div class="description">${feature.get("description")}</div>
       <div class="tags">${feature.get("tags")}</div>
-      <button class="hide editAdventureGUI" 
-              onclick="deleteAdventure(${feature.get("uid")})">delete
-      </button>
+      ${editOn ? deleteButton : ""}
    </div> 
    `;
 }
@@ -47,7 +46,7 @@ function mapClick(evt){
    document.getElementById("latin").value = lonlat[1]; 
    document.getElementById("lonin").value = lonlat[0]; 
    const mapel = document.getElementById("map");
-   mapel.map.forEachFeatureAtPixel(evt.pixel, function(feature){
+   mapel.map.forEachFeatureAtPixel(evt.pixel, (feature) => {
       populateCallout(feature, mapel.callout);  
       mapel.callout.setPosition(evt.coordinate);
       showCallout = true;
@@ -140,6 +139,30 @@ function searchFilter(lname, sboxquery){
       return false;
    }
    filter(filterFunction, lname);
+   addToFilterList("search", term, lname);
+}
+function addToFilterList(type, by, lname){
+   const flist = document.getElementById("filterList");
+   const index = flist.children.length;
+   const removedList = document.getElementById("map").removedFeatures[index];
+   const thisEntry = 
+      `<div data-index="${index}" class="contentListItem filterListItem">
+         ${type} -> ${by} of ${removedList.length}
+         <button onclick="removeFilter(${index}, this, '${lname}')">X</button>
+      </div>`;
+   flist.innerHTML+=thisEntry;
+}
+function removeFilter(index, rmButton, lname){
+   const mapel = document.getElementById("map");
+   const src = getLayerByName(mapel.map, lname).getSource();
+   const listEntry = rmButton.parentNode;
+   listEntry.innerHTML = "";
+   listEntry.classList = [];
+   mapel.removedFeatures[index] = 
+      mapel.removedFeatures[index].filter((feature) => {
+         src.addFeature(feature);
+         return false; 
+      });
 }
 function getLayerByName(map, lname){
    let layer;
@@ -152,24 +175,28 @@ function getLayerByName(map, lname){
 }
 function filter(fun, lname){
    const mapel = document.getElementById("map");
+   const thisRemovedFeatures = []
    const layer = getLayerByName(mapel.map, lname);
    //essentially array.filter, but that function is not implemented :(
    const src = layer.getSource();
-   src.forEachFeature(function(feature){
+   src.forEachFeature((feature) => {
       if(!fun(feature)){
-         mapel.removedFeatures.push(feature);
+         thisRemovedFeatures.push(feature);
          src.removeFeature(feature);
       }
    }); 
+   mapel.removedFeatures.push(thisRemovedFeatures);
 }
 function resetFilters(lname){
    const mapel = document.getElementById("map");
+   const flist = document.getElementById("filterList");
    const layer = getLayerByName(mapel.map, lname);
    const src = layer.getSource();
-   mapel.removedFeatures.forEach(function(feature){
-      src.addFeature(feature); 
+   mapel.removedFeatures.forEach((filterList) => {
+      filterList.forEach((feature) => src.addFeature(feature))
    });
    mapel.removedFeatures = [];
+   flist.innerHTML = "";
 }
 function createNewAdventure(){
    const data = document.getElementById("newAdvTable").querySelectorAll("td .advInput");
@@ -188,8 +215,8 @@ function createNewAdventure(){
 }
 initMap();
 document.getElementById("titleLeft").onclick = function(){
-   document.querySelectorAll(".editAdventureGUI").forEach(function(e){
-      e.classList.toggle("hide");
-   });
+   document.querySelectorAll(".editAdventureGUI")
+      .forEach((e) => e.classList.toggle("hide"));
+   document.getElementById("edit").classList.toggle("enabled");
 }
 changeMapControls(document.getElementById("defaultSubNav"));
