@@ -8,16 +8,12 @@
       <script src=https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.1.3/build/ol.js></script>
    </head>
    <div id="viewHead"></div>
-   <body onload="changePage(document.getElementById('mainPage'));">
+   <body onload="changePage('about');">
       <script src="js/index.js"></script>
       <div id="siteContainer">
-         <div id="topbar">
+         <div id="title">
             <h1 id="titleLeft">David James</h1>
-            <div id="nav">
-               <div id="mainPage" tplName="about" onclick="changePage(this)" class="activePage buttonStyles navItem">About</div>
-               <div tplName="projects" onclick="changePage(this)" class="buttonStyles navItem">Projects</div>
-               <div tplName="adventures" onclick="changePage(this)" class="buttonStyles navItem">Adventures</div>
-            </div> 
+            <h2 id="titleRight"> Portfolio </h2>
             <div id="hamburger" class="buttonStyles" onclick="toggleMobileNav()">
                <div class="mobileNavButton"></div>
                <div class="mobileNavButton"></div>
@@ -25,7 +21,12 @@
             </div>
 
          </div>
-         <div id="topbarline"></div>
+
+         <div id="nav" class="mediahide">
+            <div tplName="about" onclick="changePage(this.getAttribute('tplName'))" class="buttonStyles navItem">About</div>
+            <div tplName="projects" onclick="changePage(this.getAttribute('tplName'))" class="buttonStyles navItem">Projects</div>
+            <div tplName="adventures" onclick="changePage(this.getAttribute('tplName'))" class="buttonStyles navItem">Adventures</div>
+         </div>
          <div id="main">
          </div>
       </div>

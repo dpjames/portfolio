@@ -1,5 +1,8 @@
-function changePage(where){
+function changePage(caller){
+   where = caller.getAttribute('tplName');
    getPage(where).then(html => {
+      document.querySelector(".activePage").classList.toggle("activePage");
+      caller.classList.toggle("activePage");
       document.getElementById("main").innerHTML = html;
       //const head = document.getElementsByTagName("head")[0];
       const head = document.getElementById("viewHead");

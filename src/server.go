@@ -64,20 +64,20 @@ func checkPwd(uname string, pwd string) bool{
 }
 func check(e error, code int, w http.ResponseWriter){
    if(e != nil) {
-      sendError(code, w);
+      panic(code);
+      //sendError(code, w);
    }
 }
-func unpackAdventure(w http.ResponseWriter, r *http.Request) (bool, editAdventureRequest){
+func unpackAdventure(w http.ResponseWriter, r *http.Request) editAdventureRequest{
    rawBody, err := ioutil.ReadAll(r.Body);
    check(err, 500, w);
    var body editAdventureRequest;
    err = json.Unmarshal(rawBody, &body);
    check(err, 400, w);
    if(!checkPwd(body.Uname, body.Pwd)){
-      sendError(403, w);
-      return false, body
+      panic(403);
    }
-   return true, body;
+   return body;
 }
 func readAdventureGeoJson(w http.ResponseWriter) adventureGeoJson{
    b, err := ioutil.ReadFile(ADVENTURE_FILE)
@@ -94,20 +94,14 @@ func writeAdventureGeoJson(w http.ResponseWriter, geojson adventureGeoJson){
    check(err, 500, w);
 }
 func adventurePOST(w http.ResponseWriter, r *http.Request){
-   perm, body := unpackAdventure(w, r);
-   if(!perm) {
-      return;
-   }
+   body := unpackAdventure(w, r);
    advGeoJson := readAdventureGeoJson(w);
    newFeature := featureFromAdvReq(body.Adv, w);
    advGeoJson.Features = append(advGeoJson.Features, newFeature);
    writeAdventureGeoJson(w, advGeoJson);
 }
 func adventureDELETE(w http.ResponseWriter, r *http.Request){
-   perm, body := unpackAdventure(w,r);
-   if(!perm){
-      return;
-   }
+   body := unpackAdventure(w,r);
    advGeoJson := readAdventureGeoJson(w);
    features := advGeoJson.Features
    var newFeatures []feature;
@@ -120,6 +114,11 @@ func adventureDELETE(w http.ResponseWriter, r *http.Request){
    writeAdventureGeoJson(w, advGeoJson);
 }
 func adventure(w http.ResponseWriter, r *http.Request){
+   defer func() {
+      if code:= recover(); code != nil {
+         sendError(code.(int), w);
+      }
+   }()
    switch r.Method {
       case "POST":
          adventurePOST(w,r);
@@ -128,7 +127,7 @@ func adventure(w http.ResponseWriter, r *http.Request){
          adventureDELETE(w,r);
          break;
       default:
-         sendError(404, w);
+         panic(404);
    }
 }
 func featureFromAdvReq(req adventureJson, w http.ResponseWriter) feature{
