@@ -1,4 +1,4 @@
-/*#map{
+#map{
    width:75%;
    height:100%;
    display:inline-block;
@@ -47,32 +47,5 @@
    .advListItem{
       display:inline-block;
    }
-}
-*/
-
-#mapContainer {
-   display:flex;
-}
-#map{
-   width:100%;
-   height: calc(100% - 90px);
-}
-.popup{
-   padding:10px;
-   background-color:var(--bg-color);
-   border-radius:20px;
-   border: 1px solid black;
-}
-.delete {
-   background-color:red;
-}
-.listHighlight{
-   background-color:red !important;
-}
-.advListItem {
-   box-shadow: 0 3px 10px 5px rgba(0,0,0,.2);
-   border:solid 1px black;
-   background-color:white;
-   margin:3px;
 }
 

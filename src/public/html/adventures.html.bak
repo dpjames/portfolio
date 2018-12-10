@@ -1,23 +1,22 @@
-<div id="mapContainer">
-   <div id="mapControls">
-      <div class="subnav">
-         <div onclick="changeMapControls(this)" data-page="advSearch" class="active buttonStyles navItem">Search/Filter</div>
-         <div onclick="changeMapControls(this)" data-page="advList" class="buttonStyles navItem">List</div>
-         <div onclick="changeMapControls(this)" data-page="advAdd" class="editAdventureGUI hide buttonStyles navItem">Add</div>
-      </div>
-      <div id="mapControlsContent">
-         <div id="advSearch">
-           <label>filters</label>
-           <input class="advFilterSearch" type="text" value="Search here"></input>
-           <button onclick="searchFilter('adventures', '.advFilterSearch')">go!</button>
-           <button onclick="resetFilters('adventures')">reset</button>
-           <div id="filterList" class="filterList"></div>
-         </div>
+<div id="mapControls">
+   <div class="subnav">
+      <div onclick="changeMapControls(this)" data-page="advSearch" class="active buttonStyles navItem">Search/Filter</div>
+      <div onclick="changeMapControls(this)" data-page="advList" class="buttonStyles navItem">List</div>
+      <div onclick="changeMapControls(this)" data-page="advAdd" class="editAdventureGUI hide buttonStyles navItem">Add</div>
+   </div>
+   <div id="mapControlsContent">
+      <div id="advSearch">
+        <label>filters</label>
+        <input class="advFilterSearch" type="text" value="Search here"></input>
+        <button onclick="searchFilter('adventures', '.advFilterSearch')">go!</button>
+        <button onclick="resetFilters('adventures')">reset</button>
+        <div id="filterList" class="filterList"></div>
       </div>
    </div>
-   <div id="map"></div>
 </div>
 
+
+<div id="map"></div>
 
 <div id="advList" class="hide">
 </div>

@@ -1,22 +1,15 @@
 :root{
    --accent-color:#3a4dd5;
+   --bg-color:white;
 }
 html, body{
    margin:0;
    padding:0;
 }
 
-html {
-   /*overflow: scroll;
-   overflow-x: hidden;*/
-   overflow:hidden; 
-}
 ::-webkit-scrollbar {
    width: 0px;  
    background: transparent;  
-}
-::-webkit-scrollbar-thumb {
-   background: #FF0000;
 }
 .activePage {
    border-bottom: 1px solid var(--accent-color);

@@ -20,16 +20,14 @@ function changeMapControls(caller){
 }
 function populateCallout(feature, callout){
    const editOn = document.getElementById("edit").classList.contains("enabled");
-   const deleteButton = `<button class="editAdventureGUI ${editOn ? '' : 'hide'}" 
-      onclick="deleteAdventure(${feature.get("uid")})">delete</button>`
-
    callout.element.innerHTML = 
    `
    <div class="popup">
       <div class="title">${feature.get("title")}</div>
       <div class="description">${feature.get("description")}</div>
       <div class="tags">${feature.get("tags")}</div>
-      ${deleteButton}
+      <button class="editAdventureGUI ${editOn ? '' : 'hide'}" 
+              onclick="deleteAdventure(${feature.get("uid")})">delete</button>
    </div> 
    `;
 }
@@ -63,19 +61,51 @@ function mapClick(evt){
       mapel.callout.setPosition(undefined);
    }
 }
+function highlightFeature(caller,uid){
+   caller.classList.add("listHighlight");
+   const map = document.getElementById("map").map;
+   const layer = getLayerByName(map, "adventures");
+   const src = layer.getSource();
+   let feature = null;
+   src.forEachFeature(function(f){
+      if(f.get("uid") == uid){
+         feature = f;
+      }
+   });
+   console.log(feature.style);
+   console.log(feature);
+}
+function unhighlightFeature(caller,uid){
+   caller.classList.remove("listHighlight");
+   const map = document.getElementById("map").map;
+   const layer = getLayerByName(map, "adventures");
+   const src = layer.getSource();
+   let feature = null;
+   src.forEachFeature(function(f){
+      if(f.get("uid") == uid){
+         feature = f;
+      }
+   });
+   console.log(feature);
+}
 function generateAdvList(){
    const map = document.getElementById("map").map;
    const advlayer = getLayerByName(document.getElementById("map").map, "adventures");
    const src = advlayer.getSource();
    const container = document.getElementById("advList");
    container.innerHTML = "";
+   const editOn = document.getElementById("edit").classList.contains("enabled");
    src.forEachFeature((feature) => {
       const thisHTML = 
       `
-      <div class="contentListItem advListItem">
-         <div>${feature.get("title")}</div>
-         <div>${feature.get("description")}</div>
-         <div>${feature.get("tags")}</div>
+      <div onmouseover="highlightFeature(this,${feature.get('uid')});" 
+          onmouseout="unhighlightFeature(this,${feature.get('uid')});"
+           class="advListItem">
+         <div class="title">${feature.get("title")}</div>
+         <div class="description">${feature.get("description")}</div>
+         <div class="tags">${feature.get("tags")}</div>
+         <button class="editAdventureGUI delete ${editOn ? '' : 'hide'}" 
+         onclick="deleteAdventure(${feature.get("uid")})">delete</button>
       </div>
       `;
       container.innerHTML+=thisHTML; 
