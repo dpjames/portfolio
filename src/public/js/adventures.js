@@ -26,8 +26,8 @@ function populateCallout(feature, callout){
       <div class="title">${feature.get("title")}</div>
       <div class="description">${feature.get("description")}</div>
       <div class="tags">${feature.get("tags")}</div>
-      <button class="editAdventureGUI ${editOn ? '' : 'hide'}" 
-              onclick="deleteAdventure(${feature.get("uid")})">delete</button>
+      <div class="editAdventureGUI delete button ${editOn ? '' : 'hide'}" 
+              onclick="deleteAdventure(${feature.get("uid")})">delete</div>
    </div> 
    `;
 }
@@ -52,7 +52,6 @@ function mapClick(evt){
    document.getElementById("lonin").value = lonlat[0]; 
    const mapel = document.getElementById("map");
    mapel.map.forEachFeatureAtPixel(evt.pixel, (feature) => {
-      console.log(feature);
       populateCallout(feature, mapel.callout);  
       mapel.callout.setPosition(evt.coordinate);
       showCallout = true;
@@ -62,7 +61,6 @@ function mapClick(evt){
    }
 }
 function highlightFeature(caller,uid){
-   caller.classList.add("listHighlight");
    const map = document.getElementById("map").map;
    const layer = getLayerByName(map, "adventures");
    const src = layer.getSource();
@@ -72,11 +70,9 @@ function highlightFeature(caller,uid){
          feature = f;
       }
    });
-   console.log(feature.style);
-   console.log(feature);
+   feature.set("highlight", true);
 }
 function unhighlightFeature(caller,uid){
-   caller.classList.remove("listHighlight");
    const map = document.getElementById("map").map;
    const layer = getLayerByName(map, "adventures");
    const src = layer.getSource();
@@ -86,42 +82,66 @@ function unhighlightFeature(caller,uid){
          feature = f;
       }
    });
-   console.log(feature);
+   feature.set("highlight", false);
 }
-function generateAdvList(){
+function generateAdvList(id){
    const map = document.getElementById("map").map;
    const advlayer = getLayerByName(document.getElementById("map").map, "adventures");
    const src = advlayer.getSource();
-   const container = document.getElementById("advList");
+   if(id == undefined){
+      id = "advList"
+   }
+   const container = document.getElementById(id);
    container.innerHTML = "";
    const editOn = document.getElementById("edit").classList.contains("enabled");
    src.forEachFeature((feature) => {
-      const thisHTML = 
-      `
-      <div onmouseover="highlightFeature(this,${feature.get('uid')});" 
-          onmouseout="unhighlightFeature(this,${feature.get('uid')});"
+      const thisHTML = `
+      <div onmouseenter="highlightFeature(this,${feature.get('uid')});" 
+          onmouseleave="unhighlightFeature(this,${feature.get('uid')});"
            class="advListItem">
          <div class="title">${feature.get("title")}</div>
          <div class="description">${feature.get("description")}</div>
          <div class="tags">${feature.get("tags")}</div>
-         <button class="editAdventureGUI delete ${editOn ? '' : 'hide'}" 
-         onclick="deleteAdventure(${feature.get("uid")})">delete</button>
+         <div class="button editAdventureGUI delete ${editOn ? '' : 'hide'}" 
+         onclick="deleteAdventure(${feature.get("uid")})">delete</div>
       </div>
       `;
       container.innerHTML+=thisHTML; 
    });
 }
+function adventureStyle(f) {
+   if(f.get("highlight")){
+      return new ol.style.Style({
+         image: new ol.style.RegularShape({
+            stoke : new ol.style.Stroke({color : '#00F', width:2}),
+            fill  : new ol.style.Fill({color : "green"}),
+            points : 8,
+            radius : 20
+         })
+      });
+   } else {
+      return new ol.style.Style({
+         image: new ol.style.RegularShape({
+            stroke : new ol.style.Stroke({color : '#0F0', width:2}),
+            fill : new ol.style.Fill({color : "red"}),
+            points : 4,
+            radius: 10
+         })
+      });
+   }
+}
 function createAdvLayer(){
    const src = new ol.source.Vector({
       url:"./data/adventures.json",
-      format: new ol.format.GeoJSON()
+      format: new ol.format.GeoJSON(),
    });
    //maybe cluster
    const advlayer = new ol.layer.Vector({
       title:"adventures",
-      source:src
+      source:src,
+      style : adventureStyle
    });
-   advlayer.on("change", generateAdvList);
+   //advlayer.on("change", () => generateAdvList());
    return advlayer;
 }
 function createTopoLayer(){
@@ -166,6 +186,7 @@ function initMap(){
    setTimeout(() => {
       mapel.masterFeatureList = advLayer.getSource().getFeatures();
       map.updateSize();
+      generateAdvList();
    }, 500);
 }
 function searchFilter(lname, sboxquery){
@@ -189,7 +210,7 @@ function addToFilterList(type, by, lname){
    const thisEntry = 
       `<div data-index="${index}" class="contentListItem filterListItem">
          ${type} -> ${by}
-         <button onclick="removeFilter(${index}, this, '${lname}')">X</button>
+         <div class="delete button" onclick="removeFilter(${index}, this, '${lname}')">X</div>
       </div>`;
    flist.innerHTML+=thisEntry;
 }
@@ -215,7 +236,6 @@ function updateFilters(filters, src, master){
             continue;
          }
          if(!filt(feature)){
-            console.log("fail");
             pass = false;
             break;
          }
@@ -224,6 +244,7 @@ function updateFilters(filters, src, master){
          src.addFeature(feature)
       }
    });
+   generateAdvList("filterListResults");
 }
 function getLayerByName(map, lname){
    let layer;
@@ -244,12 +265,15 @@ function filter(fun, lname){
 function resetFilters(lname){
    const mapel = document.getElementById("map");
    const flist = document.getElementById("filterList");
+   const flistres = document.getElementById("filterListResults");
    const layer = getLayerByName(mapel.map, lname);
    const src = layer.getSource();
    clearFeatures(src);
    src.addFeatures(mapel.masterFeatureList);
    mapel.removedFeatures = [];
+   mapel.filters = [];
    flist.innerHTML = "";
+   flistres.innerHTML = "";
 }
 function createNewAdventure(){
    const data = document.getElementById("newAdvTable").querySelectorAll("td .advInput");

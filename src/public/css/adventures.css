@@ -52,10 +52,10 @@
 
 #mapContainer {
    display:flex;
+   height: calc(100% - 90px);
 }
 #map{
    width:100%;
-   height: calc(100% - 90px);
 }
 .popup{
    padding:10px;
@@ -64,15 +64,52 @@
    border: 1px solid black;
 }
 .delete {
-   background-color:red;
-}
-.listHighlight{
-   background-color:red !important;
+   background-color:rgba(255,0,0,.5);
 }
 .advListItem {
    box-shadow: 0 3px 10px 5px rgba(0,0,0,.2);
    border:solid 1px black;
    background-color:white;
    margin:3px;
+}
+.advListItem:hover {
+   background-color:var(--accent-color-fade);
+}
+.filterListItem {
+   margin:3px;
+   width:auto;
+   display:inline-block;
+   padding:5px;
+   border-radius: 8px;
+   background-color:rgba(0,0,0,.2);
+}
+.filterList {
+   overflow-y:hidden;
+   overflow-x:auto;
+   white-space:nowrap;
+}
+#mapControls {
+   margin-top:5px;
+   margin-right:2px;
+   margin-left:10px;
+   display:inline-block;
+   min-width: calc(25% - 7px);
+   max-width: calc(25% - 7px);
+}
+#textFilter{
+   display:flex;
+   flex-direction:column;
+}
+#textButtonDiv {
+   display:flex;
+   flex-direction:row;
+   justify-content:space-between;
+}
+#textButtonDiv .button{
+   margin-right:4px;
+   margin-top:2px;
+   margin-bottom:0px;
+   width:90%;
+   text-align:center;
 }
 
