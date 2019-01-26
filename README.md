@@ -1,2 +1,4 @@
 # portfolio
-personal site
+personal site, still under development.
+
+Live at: davidpjames.com 
